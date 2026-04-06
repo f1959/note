@@ -1,8 +1,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 // 1) Put your Supabase project URL and anon key here.
-const SUPABASE_URL = 'REPLACE_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'REPLACE_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://pnyimurfileqbesoasdl.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBueWltdXJmaWxlcWJlc29hc2RsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NDczMzAsImV4cCI6MjA5MTAyMzMzMH0.HCj5kpgu0D5b4-b02OkejdJrLdo4XX-ZrfzJ8ceW7UY';
 
 // 2) Shared login email. User enters password only in UI.
 const SHARED_EMAIL = 'sharedemail@email.com';
