@@ -23,13 +23,14 @@ import {
 
 // 1) Paste your Firebase Web app config here.
 const firebaseConfig = {
-  apiKey: "AIzaSyDbRIKSvB5OVK9Td8AklSLmayGwh9Geys0",
-  authDomain: "note-2a6f8.firebaseapp.com",
-  projectId: "note-2a6f8",
-  storageBucket: "note-2a6f8.firebasestorage.app",
-  messagingSenderId: "556359673920",
-  appId: "1:556359673920:web:0e56743418cb667d6797a5",
+  apiKey: 'AIzaSyDbRIKSvB5OVK9Td8AklSLmayGwh9Geys0',
+  authDomain: 'note-2a6f8.firebaseapp.com',
+  projectId: 'note-2a6f8',
+  storageBucket: 'note-2a6f8.firebasestorage.app',
+  messagingSenderId: '556359673920',
+  appId: '1:556359673920:web:0e56743418cb667d6797a5'
 };
+const EMAIL_DOMAIN = 'f1959.com';
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -341,14 +342,15 @@ loginBtn.addEventListener('click', async () => {
   loginStatus.textContent = '';
 
   try {
-    const email = emailInput.value.trim();
+    const idValue = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
-    if (!email || !password) {
-      loginStatus.textContent = 'Please enter email and password.';
+    if (!idValue || !password) {
+      loginStatus.textContent = 'Please enter ID and password.';
       loginStatus.style.color = '#f87171';
       return;
     }
 
+    const email = idValue.includes('@') ? idValue : `${idValue}@${EMAIL_DOMAIN}`;
     await signInWithEmailAndPassword(auth, email, password);
     emailInput.value = '';
     passwordInput.value = '';
