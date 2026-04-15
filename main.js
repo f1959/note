@@ -70,6 +70,11 @@ const adminPasswordModal = document.getElementById('adminPasswordModal');
 const adminPasswordModalInput = document.getElementById('adminPasswordModalInput');
 const adminPasswordConfirmBtn = document.getElementById('adminPasswordConfirmBtn');
 const adminPasswordCancelBtn = document.getElementById('adminPasswordCancelBtn');
+const detailModal = document.getElementById('detailModal');
+const detailModalTitle = document.getElementById('detailModalTitle');
+const detailModalContent = document.getElementById('detailModalContent');
+const detailModalDownloadBtn = document.getElementById('detailModalDownloadBtn');
+const detailModalCloseBtn = document.getElementById('detailModalCloseBtn');
 
 let notes = [];
 let selectedNoteId = null;
@@ -85,6 +90,7 @@ let adminDeletesPageIndex = 0;
 
 const ADMIN_IDS = ADMIN_EMAILS.map((email) => email.split('@')[0].toLowerCase());
 const ADMIN_PAGE_SIZE = 10;
+let detailDownloadName = 'detail.txt';
 
 function getUser() {
   return auth.currentUser;
@@ -185,8 +191,10 @@ function renderAdminCommits(items = []) {
     li.style.cursor = 'pointer';
     li.title = '클릭해서 상세 보기';
     li.addEventListener('click', () => {
-      window.alert(
-        `사용자: ${item.actorEmail || item.ownerUid || 'unknown'}\n날짜: ${ts}\n제목: ${item.titleSnapshot || '(없음)'}\n메시지: ${item.message || 'Updated note'}\n\n내용:\n${item.contentSnapshot || '(내용 없음)'}`
+      openDetailModal(
+        'Commit 상세',
+        `사용자: ${item.actorEmail || item.ownerUid || 'unknown'}\n날짜: ${ts}\n제목: ${item.titleSnapshot || '(없음)'}\n메시지: ${item.message || 'Updated note'}\n\n내용:\n${item.contentSnapshot || '(내용 없음)'}`,
+        `commit-${(item.ts && item.ts.getTime()) || Date.now()}.txt`
       );
     });
     adminCommitList.appendChild(li);
@@ -217,8 +225,10 @@ function renderAdminDeletes(items = []) {
     li.style.cursor = 'pointer';
     li.title = '클릭해서 상세 보기';
     li.addEventListener('click', () => {
-      window.alert(
-        `사용자: ${item.actorEmail || item.actorUid || 'unknown'}\n날짜: ${ts}\n삭제된 노트: ${item.noteTitle || 'Untitled note'}\n노트 ID: ${item.noteId || 'n/a'}\n\n삭제 당시 내용:\n${item.deletedContent || '(내용 없음)'}`
+      openDetailModal(
+        'Delete 상세',
+        `사용자: ${item.actorEmail || item.actorUid || 'unknown'}\n날짜: ${ts}\n삭제된 노트: ${item.noteTitle || 'Untitled note'}\n노트 ID: ${item.noteId || 'n/a'}\n\n삭제 당시 내용:\n${item.deletedContent || '(내용 없음)'}`,
+        `delete-${(item.deletedAt && item.deletedAt.getTime()) || Date.now()}.txt`
       );
     });
     adminDeleteList.appendChild(li);
@@ -580,6 +590,17 @@ function openAdminPasswordModal() {
   });
 }
 
+function openDetailModal(title, content, filename) {
+  detailModalTitle.textContent = title;
+  detailModalContent.value = content;
+  detailDownloadName = filename || 'detail.txt';
+  detailModal.classList.remove('hidden');
+}
+
+function closeDetailModal() {
+  detailModal.classList.add('hidden');
+}
+
 loginBtn.addEventListener('click', async () => {
   loginStatus.textContent = '';
 
@@ -625,6 +646,19 @@ adminDeletesPrevBtn.addEventListener('click', () => {
 adminDeletesNextBtn.addEventListener('click', () => {
   adminDeletesPageIndex += 1;
   renderAdminDeletes(adminDeletesAll);
+});
+
+detailModalCloseBtn.addEventListener('click', closeDetailModal);
+detailModalDownloadBtn.addEventListener('click', () => {
+  const blob = new Blob([detailModalContent.value || ''], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = detailDownloadName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 });
 
 newNoteBtn.addEventListener('click', async () => {

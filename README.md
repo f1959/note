@@ -52,9 +52,18 @@ service cloud.firestore {
       match /commits/{commitId} {
         allow create: if signedIn()
           && request.resource.data.ownerUid == request.auth.uid
-          && (isAdmin() || isOwner(get(/databases/$(database)/documents/notes/$(noteId)).data.ownerUid));
+          && (
+            isAdmin()
+            || (
+              exists(/databases/$(database)/documents/notes/$(noteId))
+              && isOwner(get(/databases/$(database)/documents/notes/$(noteId)).data.ownerUid)
+            )
+          );
         allow read: if isAdmin()
-          || isOwner(get(/databases/$(database)/documents/notes/$(noteId)).data.ownerUid);
+          || (
+            exists(/databases/$(database)/documents/notes/$(noteId))
+            && isOwner(get(/databases/$(database)/documents/notes/$(noteId)).data.ownerUid)
+          );
         allow update, delete: if false;
       }
     }
@@ -102,6 +111,7 @@ Important:
    - **All user commits** (collection group view)
    - **Delete history** from `audit_logs`
    - Click each history row to see full detail (user/date/content snapshot)
+   - In detail modal, click **TXT 다운로드** to save long content as a text file
    - Pagination (10 per page) for both commit and delete lists
    - Audit logs older than 30 days are auto-cleaned by admin session
 5. Normal users will not see admin panel and cannot read `audit_logs`.
