@@ -119,7 +119,7 @@ Important:
    - **Delete history** from `audit_logs`
    - Click each history row to see full detail (user/date/content snapshot)
    - In detail modal, click **TXT 다운로드** to save long content as a text file
-   - Pagination (10 per page) for both commit and delete lists
+   - **최근 10개 기본 로드 + 더보기/새로고침** (수동 조회 모드)
    - Audit logs older than 30 days are auto-cleaned by admin session
 5. Normal users will not see admin panel and cannot read `audit_logs`.
 6. If admin dashboard is empty:
@@ -158,3 +158,4 @@ Quick checklist:
 - **Admin can login but sees permission errors / no data**: Firestore Rules `isAdmin()` email mismatch or rules not published yet.
 - **Delete is visible but All user commits is empty**: make sure `admin_commits` rules block is added and published.
 - **Delete history does not auto-clean after 30 days**: update Firestore Rules so admin can delete `audit_logs` entries.
+- **관리자 화면 글자가 영어/에러가 애매함**: 최신 코드에서는 주요 오류 메시지를 한국어로 변환해 보여줍니다.
